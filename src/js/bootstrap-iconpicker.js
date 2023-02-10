@@ -1,17 +1,23 @@
 /*!========================================================================
- * File: bootstrap-iconpicker.js
- * ======================================================================== */
+* File: bootstrap-iconpicker.js v1.10.0 by @victor-valencia
+* https://victor-valencia.github.com/bootstrap-iconpicker
+* ========================================================================
+* Copyright 2013-2018 Victor Valencia Rico.
+* Licensed under MIT license.
+* https://github.com/victor-valencia/bootstrap-iconpicker/blob/master/LICENSE
+* ========================================================================
+*/
 
 ;(function($){ "use strict";
 
     // ICONPICKER PUBLIC CLASS DEFINITION
     // ==============================
     var Iconpicker = function (element, options) {
-
+/*
       if (typeof $.fn.popover === 'undefined' || typeof $.fn.popover.Constructor.VERSION === 'undefined') {
         throw new TypeError('Bootstrap iconpicker require Bootstrap popover');
       }
-
+*/
       this.$element = $(element);
       this.options  = $.extend({}, Iconpicker.DEFAULTS, this.$element.data());
       this.options  = $.extend({}, this.options, options);
@@ -67,7 +73,8 @@
         search: true,
         searchText: 'Search icon',
         selectedClass: 'btn-warning',
-        unselectedClass: 'btn-secondary'
+        unselectedClass: 'btn-secondary',
+        popovercontainer: 'body'
     };
 
     // ICONPICKER PRIVATE METHODS
@@ -86,7 +93,7 @@
             e.preventDefault();
             el.select($(this).val());
             if(op.inline === false){
-                el.$element.popover(($.fn.bsVersion() === '3.x') ? 'destroy' : 'dispose');
+                el.$element.popover('dispose');
             }
             else{
                 op.table.find("i[class$='" + $(this).val() + "']").parent().addClass(op.selectedClass);
@@ -315,7 +322,7 @@
         var search = [
             '<tr>',
             '   <td colspan="' + op.cols + '">',
-            '       <input type="text" class="form-control search-control" style="width: ' + op.cols * (($.fn.bsVersion() === '3.x') ? 39 : 41) + 'px;" placeholder="' + op.searchText + '">',
+            '       <input type="text" class="form-control search-control" style="width: ' + op.cols * (41) + 'px;" placeholder="' + op.searchText + '">',
             '   </td>',
             '</tr>'
         ];
@@ -475,7 +482,7 @@
                         .append('<i></i>')
                         .append('<input type="hidden" ' + name + '></input>')
                         .append('<span class="caret"></span>')
-                        .addClass('iconpicker ' + (($.fn.bsVersion() === '3.x') ? '' : 'dropdown-toggle'));
+                        .addClass('iconpicker dropdown-toggle');
                     data.setIconset(op.iconset);
                     $this.on('click', function(e) {
                         e.preventDefault();
@@ -484,12 +491,8 @@
                             trigger: 'manual',
                             html: true,
                             content: op.table,
-                            container: 'body',
+                            container: op.popovercontainer,
                             placement: op.placement
-                        }).on('inserted.bs.popover', function() {
-                            var el = $this.data('bs.popover');
-                            var tip = ($.fn.bsVersion() === '3.x') ? el.tip() : $(el.getTipElement())
-                            tip.addClass('iconpicker-popover');
                         }).on('shown.bs.popover', function () {
                             data.switchPage(op.icon);
                             data.bindEvents();
@@ -522,11 +525,11 @@
         $.fn.iconpicker = old;
         return this;
     };
-
+/*
     $.fn.bsVersion = function() {
         return $.fn.popover.Constructor.VERSION.substr(0,2) + 'x';
     };
-
+*/
     // ICONPICKER DATA-API
     // ===============
     $(document).on('click', 'body', function (e) {
@@ -534,7 +537,7 @@
             //the 'is' for buttons that trigger popups
             //the 'has' for icons within a button that triggers a popup
             if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                $(this).popover(($.fn.bsVersion() === '3.x') ? 'destroy' : 'dispose');
+                $(this).popover('dispose');
             }
         });
     });
